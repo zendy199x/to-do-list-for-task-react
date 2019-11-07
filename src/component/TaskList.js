@@ -6,11 +6,16 @@ class TaskList extends Component {
     render() {
       const { tasks } = this.props;
       const elmTasks = tasks.map((task, index) => {
-        return <TaskItem key={task.id} index={index} task={task}/>
+        return <TaskItem 
+                  key={task.id}
+                  index={index} 
+                  task={task}
+                  onUpdateStatus = {this.props.onUpdateStatus}
+                  />
       })
         return (
           <React.Fragment>
-            <table className="table table-bordered table-hover">
+            <table className="table table-bordered table-hover mt-15">
               <thead>
                 <tr>
                   <th className="text-center">STT</th>

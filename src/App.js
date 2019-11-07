@@ -8,7 +8,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            task: [],
+            tasks: [],
             isDisplayForm: false
         };
     }
@@ -52,6 +52,29 @@ class App extends Component {
         localStorage.setItem("tasks", JSON.stringify(tasks))
     }
 
+    onUpdateStatus = (id) => {
+        const {tasks} = this.state;
+        const index = this.findIndex(id);
+        if(index !== -1) {
+            tasks[index].status = !tasks[index].status;
+            this.setState({
+                tasks : tasks
+            })
+            localStorage.setItem("tasks", JSON.stringify(tasks))
+        }
+    }
+
+    findIndex = (id) => {
+        const {tasks} = this.state;
+        let result = -1;
+        tasks.forEach((task, index) => {
+            if(task.id === id) {
+                result = index;
+            }
+        })
+        return result;
+    }
+
     render() {
         const { tasks, isDisplayForm } = this.state;
         const elmTaskForm = isDisplayForm ? <TaskForm onCloseForm={this.onCloseForm} onSubmit={this.onSubmit}/> : '' ;
@@ -77,7 +100,9 @@ class App extends Component {
                         <Control />
                         <div className="row mt">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <TaskList tasks = { tasks }/>
+                                <TaskList 
+                                    tasks={tasks}
+                                    onUpdateStatus={this.onUpdateStatus} />
                             </div>
                         </div>
                     </div>
