@@ -9,7 +9,8 @@ class App extends Component {
         super(props);
         this.state = {
             tasks: [],
-            isDisplayForm: false
+            isDisplayForm: false,
+            taskEdding: null
         };
     }
 
@@ -31,9 +32,17 @@ class App extends Component {
     }
 
     onToogleForm = () => {
-        this.setState({
-            isDisplayForm : !this.state.isDisplayForm
-        })
+        if(this.state.isDisplayForm && this.state.taskEdding !== null) {
+            this.setState({
+                isDisplayForm : true,
+                taskEdding : null
+            })
+        } else {
+            this.setState({
+                isDisplayForm : !this.state.isDisplayForm,
+                taskEdding : null
+            })
+        }
     }
 
     onCloseForm = () => {
@@ -42,12 +51,26 @@ class App extends Component {
         })
     }
 
+    onShowForm = () => {
+        this.setState({
+            isDisplayForm : true
+        })
+    }
+
     onSubmit = (data) => {
         const { tasks } = this.state;
-        data.id = this.generateID();
-        tasks.push(data);
+        //Add
+        if (data.id === "") {
+            data.id = this.generateID();
+            tasks.push(data);
+        } else {
+            //Editting
+            const index = this.findIndex(data.id);
+            tasks[index] = data;
+        }
         this.setState({
-            tasks : tasks
+            tasks : tasks,
+            taskEdding: null
         });
         localStorage.setItem("tasks", JSON.stringify(tasks))
     }
@@ -88,9 +111,22 @@ class App extends Component {
         this.onCloseForm();
     }
 
+    onUpdate = (id) => {
+        const {tasks} = this.state;
+        const index = this.findIndex(id);
+        const taskEdding = tasks[index];
+        this.setState({
+            taskEdding : taskEdding
+        })
+        this.onShowForm();
+    }
+
     render() {
-        const { tasks, isDisplayForm } = this.state;
-        const elmTaskForm = isDisplayForm ? <TaskForm onCloseForm={this.onCloseForm} onSubmit={this.onSubmit}/> : '' ;
+        const { tasks, isDisplayForm, taskEdding } = this.state;
+        const elmTaskForm = isDisplayForm ? <TaskForm 
+            onCloseForm={this.onCloseForm} 
+            onSubmit={this.onSubmit}
+            task={taskEdding} /> : '' ;
         return (
             <div className="container">
                 <div className="text-center">
@@ -117,6 +153,7 @@ class App extends Component {
                                     tasks={tasks}
                                     onUpdateStatus={this.onUpdateStatus}
                                     onDelete={this.onDelete}
+                                    onUpdate = {this.onUpdate}
                                 />
                             </div>
                         </div>
