@@ -75,6 +75,19 @@ class App extends Component {
         return result;
     }
 
+    onDelete = (id) => {
+        const {tasks} = this.state;
+        const index = this.findIndex(id);
+        if(index !== -1) {
+            tasks.splice(index, 1);
+            this.setState({
+                tasks : tasks
+            })
+            localStorage.setItem("tasks", JSON.stringify(tasks))
+        }
+        this.onCloseForm();
+    }
+
     render() {
         const { tasks, isDisplayForm } = this.state;
         const elmTaskForm = isDisplayForm ? <TaskForm onCloseForm={this.onCloseForm} onSubmit={this.onSubmit}/> : '' ;
@@ -102,7 +115,9 @@ class App extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <TaskList 
                                     tasks={tasks}
-                                    onUpdateStatus={this.onUpdateStatus} />
+                                    onUpdateStatus={this.onUpdateStatus}
+                                    onDelete={this.onDelete}
+                                />
                             </div>
                         </div>
                     </div>

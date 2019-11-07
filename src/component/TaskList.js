@@ -10,7 +10,8 @@ class TaskList extends Component {
                   key={task.id}
                   index={index} 
                   task={task}
-                  onUpdateStatus = {this.props.onUpdateStatus}
+                  onUpdateStatus={this.props.onUpdateStatus}
+                  onDelete={this.props.onDelete}
                   />
       })
         return (
