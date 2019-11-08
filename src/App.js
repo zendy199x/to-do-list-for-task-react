@@ -14,7 +14,8 @@ class App extends Component {
             filter: {
                 name: '',
                 status: -1
-            }
+            },
+            keyword: ""
         };
     }
 
@@ -127,29 +128,43 @@ class App extends Component {
 
     onFilter = (filterName, filterStatus) => {
     filterStatus = parseInt(filterStatus, 10);
-    this.setState({
-        filter: {
-        name: filterName.toLowerCase(),
-        status: filterStatus
-        }
-    })
+        this.setState({
+            filter: {
+                name: filterName.toLowerCase(),
+                status: filterStatus
+            }
+        })
     };
 
+    onSearch = (keyword) => {
+        this.setState({
+            keyword : keyword
+        })
+    }
+
     render() {
-        const { tasks, isDisplayForm, taskEditing, filter } = this.state;
-        if(filter) {
-            if(filter.name) {
-                tasks.filter((task) => {
-                    return task.name.toLowerCase().indexOf(filter.name) !== -1;
-                })
-            }
-                tasks.filter((task) => {
-                if (filter.status === -1) {
-                    return task;
-                } else {
-                    return task.status === (filter.status === 1 ? true : false);
-                }
+
+        let { tasks, isDisplayForm, taskEditing, filter, keyword } = this.state;
+
+        if (filter) {
+        if (filter.name) {
+            tasks = tasks.filter((task) => {
+            return task.name.toLowerCase().indexOf(filter.name) !== -1;
             })
+        }
+        tasks = tasks.filter((task) => {
+            if (filter.status === -1) {
+            return task;
+            } else {
+            return task.status === (filter.status === 1 ? true : false);
+            }
+        })
+        }
+        
+        if(keyword) {
+        tasks = tasks.filter((task) => {
+            return task.name.toLowerCase().indexOf(keyword) !== -1;
+        })
         }
         
         const elmTaskForm = isDisplayForm ? <TaskForm 
@@ -175,7 +190,7 @@ class App extends Component {
                             <span className="fa fa-plus mr-5" />
                             Thêm Công Việc
                         </button>
-                        <Control />
+                        <Control onSearch={this.onSearch} />
                         <div className="row mt">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <TaskList 
